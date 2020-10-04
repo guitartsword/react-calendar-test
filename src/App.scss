@@ -1,0 +1,21 @@
+.calendar-7-hill {
+  tbody {
+    >tr {
+      height: 50px;
+    }
+    td {
+      cursor: pointer;
+    }
+    // tr:nth-child(2) td:hover {
+    //   background: linear-gradient(90deg, #FFC0CB 50%, #00FFFF 50%);
+    // }
+  }
+}
+
+.book-day {
+  background-color: red;
+}
+
+.selecting-days {
+  background-color: pink;
+}
