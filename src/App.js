@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import RowSchedule from './RowSchedule'
 import './App.scss';
 
 const dayNames = [
@@ -48,29 +49,7 @@ function App() {
       }
     });
   };
-  const [status, setStatus] = useState('NONE');
-  const [productsDays, setProductDays] = useState(generateCells(dayList.length, 'MyP1'));
-  const [selectingDays, setSelectingDays] = useState([]);
-  const [selectedDays, setSelectedDays] = useState([]);
-  const [startDay, setStartDay] = useState();
-  const setProducts = (product) => {
-    product.active = !product.active;
-    setProductDays([...productsDays]);
-  }
-  const getRange = (startDay, endDay) => {
-    console.log(startDay, endDay);
-    return productsDays.slice(startDay-1, endDay);
-  }
-  const getClasses = (product) => {
-    const classList = [];
-    if (selectedDays.find((selected) => selected._id === product._id)) {
-      classList.push('book-day');
-    }
-    if (selectingDays.find((selected) => selected._id === product._id)) {
-      classList.push('selecting-days');
-    }
-    return classList.join(' ')
-  }
+  const [selectedRange, setSelectedRanges] = useState([]);
   return (
     <section className="container">
       <h1 className="title">Kalendar Test</h1>
@@ -82,52 +61,53 @@ function App() {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              {productsDays.map((x) => <td className={getClasses(x)} key={x._id}
-                onDoubleClickCapture={
-                  () => {
-                    console.log('db clck')
-                    if (status === 'NONE') {
-                      setStatus('SELECTING')
-                      setProducts(x)
-                      setStartDay(x.yearDay);
+            <RowSchedule
+              productsDays={generateCells(dayList.length, 'Tesla Car')}
+              onRangeSelect={(newRange) => {
+                const rangeId = newRange.map((x) => x._id).join('');
+                setSelectedRanges([...selectedRange, {
+                  rangeId,
+                  range: newRange.map(x => {
+                    return {
+                      rangeId,
+                      ...x,
                     }
-                  }
-                }
-                onMouseEnter={
-                  () => {
-                    if (status === 'SELECTING') {
-                      setSelectingDays(getRange(startDay, x.yearDay));
+                  })
+                }]);
+              }}
+              selectedDays={selectedRange.flat()}
+              onRangeRemove={(rangeId) => {
+                setSelectedRanges(selectedRange.filter((range) => {
+                  return range.rangeId !== rangeId;
+                }));
+              }}
+            />
+            <RowSchedule
+              productsDays={generateCells(dayList.length, 'Normal Diesel Car')}
+              onRangeSelect={(newRange) => {
+                const rangeId = newRange.map((x) => x._id).join('');
+                setSelectedRanges([...selectedRange, {
+                  rangeId,
+                  range: newRange.map(x => {
+                    return {
+                      rangeId,
+                      ...x,
                     }
-                  }
-                }
-                onClick={
-                  () => {
-                    console.log('click')
-                    if (status === 'SELECTING') {
-                      setSelectedDays(getRange(startDay, x.yearDay));
-                      setSelectingDays([]);
-                    }
-                    setStatus('NONE');
-                  }
-                }
-              ></td>)}
-            </tr>
-            <tr>
-              {generateCells(dayList.length, 'MyX').map((x) => <td key={x._id}>{x._id}</td>)}
-            </tr>
+                  })
+                }]);
+              }}
+              selectedDays={selectedRange.flat()}
+              onRangeRemove={(rangeId) => {
+                setSelectedRanges(selectedRange.filter((range) => {
+                  return range.rangeId !== rangeId;
+                }));
+              }}
+            />
           </tbody>
         </table>
       </div>
       <pre>
-        {
-          JSON.stringify({
-            startDay,
-          }, null, 2)
-        }
-      </pre>
-      <pre>
-        {JSON.stringify(selectedDays, null, 2)}
+        {JSON.stringify(selectedRange, null, 2)}
       </pre>
     </section>
   );
