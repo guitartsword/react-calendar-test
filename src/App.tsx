@@ -50,18 +50,6 @@ function App() {
       <div>{l.dayName}</div>
     </th>
   });
-  const generateCells = (count, product) => {
-    return Array(count).fill().map((x, idx) => {
-      return {
-        _id: `${product._id}`,
-        yearDay: idx + 1,
-        referenceDate: new Date(Date.UTC(2020, 0, idx + 1, 4)),
-      }
-    });
-  };
-
-
-  
   const leftHeader = api.rent_item.map((product) => <div className="cell-height" key={product._id}>
     <p className="overflow-ellipses pt-1" title={product.name}>
       {product.name}
@@ -69,8 +57,9 @@ function App() {
   </div>);
   const rows = api.rent_item.map(product => <RowSchedule
     key={product._id}
-    productsDays={generateCells(dayList.length, product)}
-    onRangeSelect={(startDay, endDay) => {
+    forProduct={product._id}
+    yearCalendar={2020}
+    onRangeSelect={(startDay: number, endDay: number) => {
       const startDate = new Date(Date.UTC(2020, 0, startDay, 4));
       const endDate = new Date(Date.UTC(2020, 0, endDay, 4));
       const rangeId = `${product._id}_${startDate.toISOString()}_${endDate.toISOString()}`;
@@ -82,7 +71,7 @@ function App() {
       }]);
     }}
     selectedDays={selectedRange.flat()}
-    onRangeRemove={(rangeId) => {
+    onRangeRemove={(rangeId: string) => {
       setSelectedRanges(selectedRange.filter((range) => {
         return range._id !== rangeId;
       }));
@@ -104,8 +93,8 @@ function App() {
         <div className="column is-9">
           <div 
             className="table-container" 
-            onScroll={ev => {
-              localStorage.setItem('calendar.2020', ev.target.scrollLeft);
+            onScroll={( ev: React.ChangeEvent & React.UIEvent<HTMLDivElement> ) => {
+              localStorage.setItem('calendar.2020', ev.target.scrollLeft.toString());
             }}
             ref={setScroll}
           >
