@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import RowSchedule from './RowSchedule'
 import api from './mock_api.json'
 import './App.scss';
@@ -33,6 +33,16 @@ const getYearDays = (year = 2020) => {
 }
 
 function App() {
+  const [selectedRange, setSelectedRanges] = useState(api.process.map(x => ({
+    ...x,
+    startDate: new Date(x.startDate),
+    endDate: new Date(x.endDate),
+  })));
+  const setScroll = useCallback(node => {
+    if (node !== null) {
+      node.scrollLeft = localStorage.getItem('calendar.2020') || 0;
+    }
+  }, [])
   const dayList = getYearDays().map(l => {
     return <th key={`${l.month}-${l.day}-${l.dayName}`}>
       <div>{l.month}</div>
@@ -52,11 +62,6 @@ function App() {
 
 
   
-  const [selectedRange, setSelectedRanges] = useState(api.process.map(x => ({
-    ...x,
-    startDate: new Date(x.startDate),
-    endDate: new Date(x.endDate),
-  })));
   const leftHeader = api.rent_item.map((product) => <div className="cell-height" key={product._id}>
     <p className="overflow-ellipses pt-1" title={product.name}>
       {product.name}
@@ -97,7 +102,13 @@ function App() {
           </div>
         </div>
         <div className="column is-9">
-          <div className="table-container">
+          <div 
+            className="table-container" 
+            onScroll={ev => {
+              localStorage.setItem('calendar.2020', ev.target.scrollLeft);
+            }}
+            ref={setScroll}
+          >
             <table className="table is-striped is-bordered calendar-7-hill">
               <thead>
                 <tr className="heading-height">

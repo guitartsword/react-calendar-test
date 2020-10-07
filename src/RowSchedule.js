@@ -4,6 +4,7 @@ export default function (props) {
     const [status, setStatus] = useState('NONE');
     const [startDay, setStartDay] = useState();
     const [selectingDays, setSelectingDays] = useState([]);
+    const [hoverDay, setHoverDay] = useState(-1);
     const getClasses = (product) => {
         const classList = ['cell-height'];
         const isInRange = props.selectedDays.find((selected) => {
@@ -19,32 +20,45 @@ export default function (props) {
         }
         return classList.join(' ')
     }
-    const getRange = (startDay, endDay) => {
-        return props.productsDays.slice(startDay - 1, endDay);
+    const getRange = (day1, day2) => {
+        if (day1 < day2) {
+            return props.productsDays.slice(day1 - 1, day2);
+        } else {
+            return props.productsDays.slice(day2 - 1, day1);
+        }
+    }
+    const startSelecting = (product) => {
+        if (status === 'NONE') {
+            setStatus('SELECTING')
+            setStartDay(product.yearDay);
+            setSelectingDays(getRange(product.yearDay, product.yearDay));
+        }
     }
     const tableDays = props.productsDays.map((x) => <td className={getClasses(x)} key={x.yearDay}
-        onDoubleClickCapture={
-            () => {
-                if (status === 'NONE') {
-                    setStatus('SELECTING')
-                    setStartDay(x.yearDay);
-                }
-            }
-        }
+        // onDoubleClick={() => startSelecting(x)}
         onMouseEnter={
             () => {
                 if (status === 'SELECTING') {
-                    setSelectingDays(getRange(startDay, x.yearDay));
+                    const range = getRange(startDay, x.yearDay);
+                    setSelectingDays(range);
+                    setHoverDay(x.yearDay);
                 }
             }
         }
         onClick={
             (ev) => {
                 if (status === 'SELECTING') {
-                    props.onRangeSelect(startDay, x.yearDay);
+                    if (startDay < x.yearDay) {
+                        props.onRangeSelect(startDay, x.yearDay);
+                    } else {
+                        props.onRangeSelect(x.yearDay, startDay);
+                    }
                     setSelectingDays([]);
+                    setHoverDay(-1)
+                    setStatus('NONE');
+                } else {
+                    startSelecting(x);
                 }
-                setStatus('NONE');
             }
         }
         onContextMenu={
@@ -56,12 +70,13 @@ export default function (props) {
                     && x.referenceDate <= selected.endDate;
                 });
                 if (range) {
-                    console.log(range);
                     props.onRangeRemove(range._id);
                 }
             }
         }
-    ></td>);
+    >
+        {x.yearDay === hoverDay ? selectingDays.length : ''}
+    </td>);
     return <tr>
         {tableDays}
     </tr>
