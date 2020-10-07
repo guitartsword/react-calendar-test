@@ -5,7 +5,7 @@ export default function (props) {
     const [startDay, setStartDay] = useState();
     const [selectingDays, setSelectingDays] = useState([]);
     const getClasses = (product) => {
-        const classList = [];
+        const classList = ['cell-height'];
         if (props.selectedDays.map(x => x.range).flat().find((selected) => selected._id === product._id)) {
             classList.push('book-day');
         }
@@ -15,7 +15,6 @@ export default function (props) {
         return classList.join(' ')
     }
     const getRange = (startDay, endDay) => {
-        console.log(startDay, endDay);
         return props.productsDays.slice(startDay - 1, endDay);
     }
     const tableDays = props.productsDays.map((x) => <td className={getClasses(x)} key={x._id}
@@ -23,7 +22,6 @@ export default function (props) {
             () => {
                 if (status === 'NONE') {
                     setStatus('SELECTING')
-                    // setProducts(x)
                     setStartDay(x.yearDay);
                 }
             }

@@ -1,0 +1,27 @@
+{
+    "rent_item": [
+        {
+            "_id": "id0",
+            "name": "Tesla Car"
+        },
+        {
+            "_id": "id1",
+            "name": "Super Really Long Car Name That Shouldn't be so long"
+        },
+        {
+            "_id": "id2",
+            "name": "Tesla Car 2"
+        },
+        {
+            "_id": "id3",
+            "name": "Toyota Sedan"
+        }
+    ],
+    "process": [
+        {
+            "startDate": "2020-01-01T12:00:00.000+8",
+            "endDate": "2020-01-05",
+            "rent_item": "id0"
+        }
+    ]
+}

@@ -1,14 +1,27 @@
+.heading-height {
+  height: 100px;
+}
+.cell-height {
+  height: 50px;
+}
+.overflow-ellipses{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.pt-1 {
+  padding-top: 1em;
+}
+
 .calendar-7-hill {
+  td {
+    width: 50px;
+  }
   tbody {
-    >tr {
-      height: 50px;
-    }
     td {
       cursor: pointer;
     }
-    // tr:nth-child(2) td:hover {
-    //   background: linear-gradient(90deg, #FFC0CB 50%, #00FFFF 50%);
-    // }
   }
 }
 
