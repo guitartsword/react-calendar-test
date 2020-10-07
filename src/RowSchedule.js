@@ -6,10 +6,15 @@ export default function (props) {
     const [selectingDays, setSelectingDays] = useState([]);
     const getClasses = (product) => {
         const classList = ['cell-height'];
-        if (props.selectedDays.map(x => x.range).flat().find((selected) => selected._id === product._id)) {
+        const isInRange = props.selectedDays.find((selected) => {
+            return product._id === selected.rent_item
+            && product.referenceDate >= selected.startDate
+            && product.referenceDate <= selected.endDate;
+        });
+        if (isInRange) {
             classList.push('book-day');
         }
-        if (selectingDays.find((selected) => selected._id === product._id)) {
+        if (selectingDays.find((selected) => selected.yearDay === product.yearDay)) {
             classList.push('selecting-days');
         }
         return classList.join(' ')
@@ -17,7 +22,7 @@ export default function (props) {
     const getRange = (startDay, endDay) => {
         return props.productsDays.slice(startDay - 1, endDay);
     }
-    const tableDays = props.productsDays.map((x) => <td className={getClasses(x)} key={x._id}
+    const tableDays = props.productsDays.map((x) => <td className={getClasses(x)} key={x.yearDay}
         onDoubleClickCapture={
             () => {
                 if (status === 'NONE') {
@@ -36,7 +41,7 @@ export default function (props) {
         onClick={
             (ev) => {
                 if (status === 'SELECTING') {
-                    props.onRangeSelect(getRange(startDay, x.yearDay));
+                    props.onRangeSelect(startDay, x.yearDay);
                     setSelectingDays([]);
                 }
                 setStatus('NONE');
@@ -45,9 +50,14 @@ export default function (props) {
         onContextMenu={
             (ev) => {
                 ev.preventDefault();
-                const range = props.selectedDays.find((selected) => selected.rangeId.includes(x._id));
+                const range = props.selectedDays.find((selected) => {
+                    return x._id === selected.rent_item
+                    && x.referenceDate >= selected.startDate
+                    && x.referenceDate <= selected.endDate;
+                });
                 if (range) {
-                    props.onRangeRemove(range.rangeId);
+                    console.log(range);
+                    props.onRangeRemove(range._id);
                 }
             }
         }

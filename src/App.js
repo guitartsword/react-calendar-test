@@ -20,9 +20,8 @@ const monthNames = [
 ]
 
 const getYearDays = (year = 2020) => {
-  const calculatedYear = year - 1900;
   const days = [];
-  for (let yearDay = 1, day = new Date(year, 0, yearDay); day.getYear() === calculatedYear; yearDay++, day = new Date(year, 0, yearDay)) {
+  for (let yearDay = 1, day = new Date(year, 0, yearDay); day.getFullYear() === year; yearDay++, day = new Date(year, 0, yearDay)) {
     days.push({
       dayName: dayNames[day.getDay()],
       month: monthNames[day.getMonth()],
@@ -44,38 +43,43 @@ function App() {
   const generateCells = (count, product) => {
     return Array(count).fill().map((x, idx) => {
       return {
-        _id: `${product}_${idx}`,
+        _id: `${product._id}`,
         yearDay: idx + 1,
+        referenceDate: new Date(Date.UTC(2020, 0, idx + 1, 4)),
       }
     });
   };
 
 
   
-  const [selectedRange, setSelectedRanges] = useState([]);
-  const leftHeader = api.rent_item.map((product) => <div className="cell-height">
-    <p className="overflow-ellipses pt-1" title={product.name} key={product._id}>
+  const [selectedRange, setSelectedRanges] = useState(api.process.map(x => ({
+    ...x,
+    startDate: new Date(x.startDate),
+    endDate: new Date(x.endDate),
+  })));
+  const leftHeader = api.rent_item.map((product) => <div className="cell-height" key={product._id}>
+    <p className="overflow-ellipses pt-1" title={product.name}>
       {product.name}
     </p>
   </div>);
   const rows = api.rent_item.map(product => <RowSchedule
-    productsDays={generateCells(dayList.length, product.name)}
-    onRangeSelect={(newRange) => {
-      const rangeId = newRange.map((x) => x._id).join('');
+    key={product._id}
+    productsDays={generateCells(dayList.length, product)}
+    onRangeSelect={(startDay, endDay) => {
+      const startDate = new Date(Date.UTC(2020, 0, startDay, 4));
+      const endDate = new Date(Date.UTC(2020, 0, endDay, 4));
+      const rangeId = `${product._id}_${startDate.toISOString()}_${endDate.toISOString()}`;
       setSelectedRanges([...selectedRange, {
-        rangeId,
-        range: newRange.map(x => {
-          return {
-            rangeId,
-            ...x,
-          }
-        })
+        _id: rangeId,
+        startDate,
+        endDate,
+        rent_item: product._id
       }]);
     }}
     selectedDays={selectedRange.flat()}
     onRangeRemove={(rangeId) => {
       setSelectedRanges(selectedRange.filter((range) => {
-        return range.rangeId !== rangeId;
+        return range._id !== rangeId;
       }));
     }}
   />)
