@@ -3,59 +3,6 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import RowSchedule, { CellData } from './RowSchedule';
 import userEvent from '@testing-library/user-event';
 
-const tenDayCalendar: CellData[] = [
-  {
-    _id: 'itm1',
-    referenceDate: new Date(Date.UTC(2020, 0, 1, 4)),
-    yearDay: 1
-  },
-  {
-    _id: 'itm1',
-    referenceDate: new Date(Date.UTC(2020, 0, 2, 4)),
-    yearDay: 2
-  },
-  {
-    _id: 'itm1',
-    referenceDate: new Date(Date.UTC(2020, 0, 3, 4)),
-    yearDay: 3
-  },
-  {
-    _id: 'itm1',
-    referenceDate: new Date(Date.UTC(2020, 0, 4, 4)),
-    yearDay: 4
-  },
-  {
-    _id: 'itm1',
-    referenceDate: new Date(Date.UTC(2020, 0, 5, 4)),
-    yearDay: 5
-  },
-  {
-    _id: 'itm1',
-    referenceDate: new Date(Date.UTC(2020, 0, 6, 4)),
-    yearDay: 6
-  },
-  {
-    _id: 'itm1',
-    referenceDate: new Date(Date.UTC(2020, 0, 7, 4)),
-    yearDay: 7
-  },
-  {
-    _id: 'itm1',
-    referenceDate: new Date(Date.UTC(2020, 0, 8, 4)),
-    yearDay: 8
-  },
-  {
-    _id: 'itm1',
-    referenceDate: new Date(Date.UTC(2020, 0, 9, 4)),
-    yearDay: 9
-  },
-  {
-    _id: 'itm1',
-    referenceDate: new Date(Date.UTC(2020, 0, 10, 4)),
-    yearDay: 10
-  },
-]
-
 describe('2020 Calendar Rent Item Row', () => {
   let onRangeRemove = jest.fn();
   let onRangeSelect = jest.fn();
