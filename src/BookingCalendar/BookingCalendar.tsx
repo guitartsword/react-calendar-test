@@ -42,7 +42,11 @@ export default function () {
   const [rentItem, setRentItem] = useState<RentItem[]>([]);
   useEffect(() => {
     fetch('/api/rent_item.json').then(r => r.json() as unknown as RentItem[]).then((p) => {setRentItem(p)});
-    fetch('/api/process.json').then(r => r.json() as unknown as Process[]).then((p) => {setProcesses(p)});
+    fetch('/api/process.json').then(r => r.json() as unknown as Process[]).then((p) => {setProcesses(p.map(p => ({
+      ...p,
+      startDate: new Date(p.startDate),
+      endDate: new Date(p.endDate),
+    })))});
   },[]);
   const leftHeader = rentItem.map((product) => <div className="cell-height" key={product._id}>
     <p className="overflow-ellipses pt-1" title={product.name}>
@@ -71,7 +75,7 @@ export default function () {
         rent_item: product._id
       }]);
     }}
-    selectedDays={processes.flat()}
+    selectedDays={processes}
     onRangeRemove={(rangeId: string) => {
       setProcesses(processes.filter((range) => {
         return range._id !== rangeId;
@@ -79,7 +83,7 @@ export default function () {
     }}
   />)
 
-  return <div className="columns is-gapless is-mobile">
+  return <div className="columns is-gapless">
     <div className="column is-3">
       <div className="products">
         <div className="heading-height"></div>
@@ -105,6 +109,13 @@ export default function () {
           </tbody>
         </table>
       </div>
+      <pre>
+        PROCESSES:<br></br>
+        {JSON.stringify(processes, null, 2)}
+        <br></br>
+        RENT_ITEM:<br></br>
+        {JSON.stringify(rentItem, null, 2)}
+      </pre>
     </div>
   </div>
 }
