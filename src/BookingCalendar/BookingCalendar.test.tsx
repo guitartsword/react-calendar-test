@@ -1,9 +1,9 @@
 import React from 'react';
 import * as testingLibrary from '@testing-library/react';
 // import App from './App';
-import processMock from '../public/api/process.json';
-import rentItem from '../public/api/rent_item.json';
-import BookingCalendar from './BookingCalendar/BookingCalendar';
+import processMock from '../../public/api/process.json';
+import rentItem from '../../public/api/rent_item.json';
+import BookingCalendar from './BookingCalendar';
 
 const { act, fireEvent, render, screen } = testingLibrary;
 
@@ -65,5 +65,5 @@ describe('calendar', () => {
       target: {scrollLeft: scrollAmount}
     });
     expect(localStorage.getItem('calendar.2020')).toBe(scrollAmount.toString());
-  })
+  });
 });

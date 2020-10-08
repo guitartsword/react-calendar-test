@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import RowSchedule from '../RowSchedule';
-import { Process, RentItem } from '../types';
+import RowSchedule from './RowSchedule';
+import { Process, RentItem } from './types';
 
 
 const dayNames = [
