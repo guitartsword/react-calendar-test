@@ -66,4 +66,28 @@ describe('calendar', () => {
     });
     expect(localStorage.getItem('calendar.2020')).toBe(scrollAmount.toString());
   });
+  test('has holiday class on header and cells', () => {
+    const cells = screen.getAllByRole('cell');
+    const headers = screen.getAllByRole('columnheader');
+    expect(cells).toHaveLength(366*4);
+    expect(headers).toHaveLength(366);
+    expect(headers[0]).not.toHaveClass('holiday');
+    expect(headers[1]).not.toHaveClass('holiday');
+    expect(headers[2]).not.toHaveClass('holiday');
+    expect(headers[3]).toHaveClass('holiday');
+    expect(cells[0]).not.toHaveClass('holiday');
+    expect(cells[1]).not.toHaveClass('holiday');
+    expect(cells[2]).not.toHaveClass('holiday');
+    expect(cells[3]).toHaveClass('holiday');
+  });
+  test('show process as a bar on top of calendar', ()=> {
+    const processes = screen.getAllByTestId('process');
+    const style0 = processes[0].style;
+    expect(parseInt(style0.top)).toBeGreaterThanOrEqual(100);
+    expect(parseInt(style0.left)).toBe(25);
+    expect(parseInt(style0.width)).toBe(200);
+    expect(parseInt(processes[1].style.top)).toBeGreaterThanOrEqual(250);
+    expect(processes[1].style.left).toBe('13725px');
+    expect(processes[1].style.width).toBe('1450px');
+  });
 });

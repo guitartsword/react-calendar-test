@@ -16,7 +16,7 @@ describe('2020 Calendar Rent Item Row', () => {
           forProduct="itm1"
           onRangeRemove={onRangeRemove}
           onRangeSelect={onRangeSelect}
-          selectedDays={[{
+          processes={[{
             _id: 'range1',
             startDate: new Date(Date.UTC(2020,0,9,4)),
             endDate: new Date(Date.UTC(2020,0,10,4)),

@@ -1,8 +1,20 @@
+$headingHeight: 100px;
+$cellSize: 50px;
+
+@mixin cell-params {
+  width: 50px;
+  height: 50px;
+  max-width: 50px;
+  max-height:50px;
+  min-width: 50px;
+  min-height: 50px;
+}
+
 .heading-height {
-  height: 100px;
+  height: $headingHeight;
 }
 .cell-height {
-  height: 50px;
+  @include cell-params;
 }
 .overflow-ellipses{
   overflow: hidden;
@@ -15,20 +27,44 @@
 }
 
 .calendar-7-hill {
+  position: relative;
   td {
-    width: 50px;
+    @include cell-params;
+  }
+  th {
+    @include cell-params;
+    >* {
+      text-align: center;
+    }
   }
   tbody {
     td {
       cursor: pointer;
     }
+    tr {
+      position: relative;
+    }
   }
+}
+
+.holiday {
+  background-color: #EEE;
+}
+
+.selecting-days {
+  background-color: pink;
 }
 
 .book-day {
   background-color: red;
 }
 
-.selecting-days {
-  background-color: pink;
+.relative {
+  position: relative
+}
+.process {
+  position: absolute;
+  height: 25px;
+  width: 50px;
+  background-color: rgba(255,255,0,0.5);
 }

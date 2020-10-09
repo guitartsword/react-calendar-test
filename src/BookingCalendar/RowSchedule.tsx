@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import { MS_IN_AN_HOUR, MS_IN_A_DAY } from '../utils/dateUtils';
 import { Process } from './types';
 
 
@@ -9,14 +10,14 @@ export interface CellData {
 }
 
 interface Props {
-    selectedDays: Process[]
+    processes: Process[]
     yearCalendar: number;
     forProduct: string;
     // cellDays: CellData[];
     onRangeSelect: (startDay: number, endDay: number) => void
     onRangeRemove: (id: string) => void
 }
-const MS_IN_A_DAY = 1000*60*60*24
+
 export default function (props: Props) {
     const getDaysInYear = (year:number) => {
         const firstDayOfThisYear = new Date(year,0,1).getTime();
@@ -42,11 +43,20 @@ export default function (props: Props) {
     const [selectingDays, setSelectingDays] = useState<CellData[]>([]);
     const getClasses = (product: CellData) => {
         const classList = ['cell-height'];
-        const isInRange = props.selectedDays.find((selected) => {
+        const isInRange = props.processes.find((selected) => {
             return product._id === selected.rent_item
             && product.referenceDate >= selected.startDate
             && product.referenceDate <= selected.endDate;
         });
+        const getDayWithTimeZone = (timezone: number, date: Date) => {
+            return  new Date(date.getTime() + timezone * MS_IN_AN_HOUR).getUTCDay();
+        }
+        const day = getDayWithTimeZone(8, product.referenceDate)
+        const isHoliday = day === 0 || day === 6;
+
+        if (isHoliday) {
+            classList.push('holiday');
+        }
         if (isInRange) {
             classList.push('book-day');
         }
@@ -99,7 +109,7 @@ export default function (props: Props) {
         onContextMenu={
             (ev) => {
                 ev.preventDefault();
-                const range = props.selectedDays.find((selected) => {
+                const range = props.processes.find((selected) => {
                     return x._id === selected.rent_item
                     && x.referenceDate >= selected.startDate
                     && x.referenceDate <= selected.endDate;
